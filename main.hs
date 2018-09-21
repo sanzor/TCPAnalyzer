@@ -7,8 +7,8 @@ module Main where
     main::IO()
     main=do 
         dat<-parseFile "test.txt"
-        wrtiteFile "out.txt" 
-        putStrLn $ show dat
+        wrtiteFile "out.txt" dat
+        Prelude.putStrLn $ show dat
 
 
         

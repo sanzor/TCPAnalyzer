@@ -1,6 +1,6 @@
 module File where 
 
-    import Data.Text 
+    import Data.Text(pack,unpack,splitOn)
     data File=Rfile (Maybe Readme) | Dfile  Samples
     
     data Readme=Readme{
@@ -17,4 +17,9 @@ module File where
         toFile::a->Text
         fromFile::Text->a
     instance FileFormat Samples where
-        toBfile s=undefined
+        toFile s=mapMaybe trm  $ values s where 
+                 case trm val of
+                  Just nr ->  Just (pack . show $ nr)
+                  _       ->  Nothing
+
+        fromFile s=mapMaybe (readMaybe.unpack) (splitOn (pack ",") s)

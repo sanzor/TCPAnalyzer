@@ -13,10 +13,11 @@ module Parsing(parseFile) where
     (<>) = pack
     (><)::Text->String
     (><) =unpack
+
     coma=(<>) ","
 
 
-    parseFile::FilePath->IO  File
+    parseFile::FilePath->IO File
     parseFile fileName= do
         text<-I.readFile fileName
         let ! fileLines =  splitOn  coma text
@@ -48,5 +49,7 @@ module Parsing(parseFile) where
     parseSamples::[Text]->Maybe Samples
     parseSamples [] =  Nothing
     parseSamples textValues =  Just (Samples (map (readMaybe.unpack) textValues)) 
+
+        
 
     
