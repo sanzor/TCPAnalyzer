@@ -1,6 +1,9 @@
 module File where 
+    import Text.Read(readMaybe)
+    import Data.Text(pack,unpack,splitOn,Text,concat)
+    import Data.Maybe
 
-    import Data.Text(pack,unpack,splitOn)
+
     data File=Rfile (Maybe Readme) | Dfile  Samples
     
     data Readme=Readme{
@@ -13,13 +16,15 @@ module File where
 
     newtype Samples=Samples{values::[Maybe Double]}deriving(Show)
 
-    class FileFormat  a where
-        toFile::a->Text
-        fromFile::Text->a
-    instance FileFormat Samples where
-        toFile s=mapMaybe trm  $ values s where 
-                 case trm val of
-                  Just nr ->  Just (pack . show $ nr)
-                  _       ->  Nothing
+    class FileText  a where
+        fromFile::a->Text
+        toFile::Text->a
 
-        fromFile s=mapMaybe (readMaybe.unpack) (splitOn (pack ",") s)
+    instance FileText Samples where
+        fromFile s=Data.Text.concat ( mapMaybe select (values s)) where
+             select mDouble=case mDouble of 
+                Just value ->Just (pack.show $ value)
+                Nothing -> Nothing
+        toFile text=Samples  (map (readMaybe.unpack) (splitOn (pack ",") text))
+    instance Show File where
+        show =unpack.fromFile 
