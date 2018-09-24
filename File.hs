@@ -1,7 +1,7 @@
 module File where 
     import Text.Read(readMaybe)
-    import Data.Text(pack,unpack,splitOn,Text,concat)
-    import Data.Maybe
+    import Data.Text(splitOn,Text,concat)
+    import Data.Maybe(Maybe,mapMaybe,)
     import Data.List(intercalate)
     import Misc((<>),(><),coma)
 
@@ -32,7 +32,7 @@ module File where
     instance TextEncode Readme where
         toText r=intercalate "," [maxClients,minClients,stepClients,maxDelay,minDelay,stepDelay]
     instance TextEncode File where
-        toText (Rfile c)=
+        toText (Rfile c)=(><) (concat ["Rfile: ",c])
 
     instance Show File where
         show =unpack.fromText 
