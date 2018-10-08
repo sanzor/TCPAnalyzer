@@ -26,7 +26,7 @@ module Parsing(parseFile) where
          1 -> do
             let cells=splitOn coma (Prelude.head fileLines)
             let readme=parseReadme cells
-            return (Rfile (fromMaybe  Nothing  (Just readme)))
+            return (Rfile (fromMaybe  Nothing  readme))
          _ -> do
                 let !samples=fromMaybe (Samples []) (parseSamples fileLines)
                 return (Dfile  samples)

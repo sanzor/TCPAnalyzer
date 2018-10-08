@@ -1,9 +1,9 @@
 module File where 
     import Text.Read(readMaybe)
-    import Data.Text(splitOn,Text,concat)
+    import Data.Text(splitOn,Text,concat,pack,unpack)
     import Data.Maybe(Maybe,mapMaybe,)
     import Data.List(intercalate)
-    import Misc((<>),(><),coma)
+
 
 
     data File=Rfile (Maybe Readme) | Dfile  Samples
@@ -30,9 +30,9 @@ module File where
         fromText text=Samples  (map (readMaybe.unpack) (splitOn (pack ",") text))
     
     instance TextEncode Readme where
-        toText r=intercalate "," [maxClients,minClients,stepClients,maxDelay,minDelay,stepDelay]
+        toText r=intersperse ',' [maxClients,minClients,stepClients,maxDelay,minDelay,stepDelay]
     instance TextEncode File where
-        toText (Rfile c)=(><) (concat ["Rfile: ",c])
+        toText (Rfile c)=fromMaybe (<> "empty") (fmap toText c)
 
     instance Show File where
         show =unpack.fromText 
