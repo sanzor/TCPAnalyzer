@@ -1,13 +1,10 @@
 module File where 
-    import Text.Read(readMaybe)
-    import Data.Text(splitOn,Text,concat,pack,unpack)
-    import Data.Maybe(Maybe,mapMaybe,)
-    import Data.List(intercalate)
-
-
-
-    data File=Rfile (Maybe Readme) | Dfile  Samples
     
+    import Text.Read(readMaybe)
+    import Data.Text(splitOn,Text,concat,pack,unpack,head,tail) 
+    import Data.Maybe(Maybe,mapMaybe,fromMaybe)
+    import Data.List(intercalate) 
+
     data Readme=Readme{
         maxClients::Int,
         minClients::Int,
@@ -16,6 +13,7 @@ module File where
         minDelay::Int,
         stepDelay::Int}deriving(Show)
 
+    data File=Rfile (Maybe Readme) | Dfile  Samples
     newtype Samples=Samples{values::[Maybe Double]}deriving(Show)
 
     class TextEncode  a where
@@ -30,9 +28,22 @@ module File where
         fromText text=Samples  (map (readMaybe.unpack) (splitOn (pack ",") text))
     
     instance TextEncode Readme where
-        toText r=intersperse ',' [maxClients,minClients,stepClients,maxDelay,minDelay,stepDelay]
+        toText r=pack $ intercalate ","  (map  show [maxClients r,minClients r,stepClients r,maxDelay  r,minDelay r,stepDelay r])
     instance TextEncode File where
-        toText (Rfile c)=fromMaybe (<> "empty") (fmap toText c)
+       toText f=case f of 
+         (Rfile mr) ->undefined
+         (Dfile s)  ->undefined
+       fromText tx= case Data.Text.head  tx of
+         'r' ->undefined
+         'd' ->undefined
+        
+   
+    parseText::Text->Maybe [Double]
+    parseText (x:xs)=go [] [](x:xs) where
+        go _ ls []=if length ls == 6 then Just ls else Nothing
+        go small big (x:xs)=case x of
+                              ',' ->go []  ((read::Text->Double). unpack small):big xs
+
 
     instance Show File where
         show =unpack.fromText 
