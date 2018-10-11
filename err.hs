@@ -1,291 +1,170 @@
 
-File.hs:32:26: error:
-    * Couldn't match expected type `Text' with actual type `[a1]'
+File.hs:36:28: error:
+    * Couldn't match expected type `Text' with actual type `[a2]'
     * In the expression:
-        (pack "r:{")
-          ++ fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")
-      In an equation for `toText':
-          toText (Rfile c)
-            = (pack "r:{")
-                ++ fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")
-      In the instance declaration for `TextEncode File'
+        (pack "r:{") ++ fromMaybe (pack "emptyFile") mr ++ (pack "r:}")
+      In a case alternative:
+          (Rfile mr)
+            -> (pack "r:{") ++ fromMaybe (pack "emptyFile") mr ++ (pack "r:}")
+      In the expression:
+        case f of
+          (Rfile mr)
+            -> (pack "r:{") ++ fromMaybe (pack "emptyFile") mr ++ (pack "r:}")
+          (Dfile s) -> undefined
    |
-32 |         toText (Rfile c)=(pack "r:{")++fromMaybe (pack "empty") (fmap toText c)++ (pack "}")
-   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+36 |              (Rfile mr) -> (pack "r:{")++fromMaybe (pack "emptyFile") mr++(pack "r:}")
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-File.hs:32:27: error:
-    * Couldn't match expected type `[a1]' with actual type `Text'
+File.hs:36:29: error:
+    * Couldn't match expected type `[a2]' with actual type `Text'
     * In the first argument of `(++)', namely `(pack "r:{")'
       In the expression:
-        (pack "r:{")
-          ++ fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")
-      In an equation for `toText':
-          toText (Rfile c)
-            = (pack "r:{")
-                ++ fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")
+        (pack "r:{") ++ fromMaybe (pack "emptyFile") mr ++ (pack "r:}")
+      In a case alternative:
+          (Rfile mr)
+            -> (pack "r:{") ++ fromMaybe (pack "emptyFile") mr ++ (pack "r:}")
    |
-32 |         toText (Rfile c)=(pack "r:{")++fromMaybe (pack "empty") (fmap toText c)++ (pack "}")
-   |                           ^^^^^^^^^^
+36 |              (Rfile mr) -> (pack "r:{")++fromMaybe (pack "emptyFile") mr++(pack "r:}")
+   |                             ^^^^^^^^^^
 
-File.hs:32:40: error:
-    * Couldn't match expected type `[a1]' with actual type `Text'
+File.hs:36:42: error:
+    * Couldn't match expected type `[a2]' with actual type `Text'
     * In the first argument of `(++)', namely
-        `fromMaybe (pack "empty") (fmap toText c)'
+        `fromMaybe (pack "emptyFile") mr'
       In the second argument of `(++)', namely
-        `fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")'
+        `fromMaybe (pack "emptyFile") mr ++ (pack "r:}")'
       In the expression:
-        (pack "r:{")
-          ++ fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")
+        (pack "r:{") ++ fromMaybe (pack "emptyFile") mr ++ (pack "r:}")
    |
-32 |         toText (Rfile c)=(pack "r:{")++fromMaybe (pack "empty") (fmap toText c)++ (pack "}")
-   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+36 |              (Rfile mr) -> (pack "r:{")++fromMaybe (pack "emptyFile") mr++(pack "r:}")
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-File.hs:32:84: error:
-    * Couldn't match expected type `[a1]' with actual type `Text'
-    * In the second argument of `(++)', namely `(pack "}")'
+File.hs:36:71: error:
+    * Couldn't match type `Readme' with `Text'
+      Expected type: Maybe Text
+        Actual type: Maybe Readme
+    * In the second argument of `fromMaybe', namely `mr'
+      In the first argument of `(++)', namely
+        `fromMaybe (pack "emptyFile") mr'
       In the second argument of `(++)', namely
-        `fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")'
-      In the expression:
-        (pack "r:{")
-          ++ fromMaybe (pack "empty") (fmap toText c) ++ (pack "}")
+        `fromMaybe (pack "emptyFile") mr ++ (pack "r:}")'
    |
-32 |         toText (Rfile c)=(pack "r:{")++fromMaybe (pack "empty") (fmap toText c)++ (pack "}")
-   |                                                                                    ^^^^^^^^
+36 |              (Rfile mr) -> (pack "r:{")++fromMaybe (pack "emptyFile") mr++(pack "r:}")
+   |                                                                       ^^
 
-File.hs:33:26: error:
-    * Couldn't match expected type `Text' with actual type `[a2]'
-    * In the expression: (pack "d:{") ++ (toText s) ++ (pack "}")
-      In an equation for `toText':
-          toText (Dfile s) = (pack "d:{") ++ (toText s) ++ (pack "}")
+File.hs:36:76: error:
+    * Couldn't match expected type `[a2]' with actual type `Text'
+    * In the second argument of `(++)', namely `(pack "r:}")'
+      In the second argument of `(++)', namely
+        `fromMaybe (pack "emptyFile") mr ++ (pack "r:}")'
+      In the expression:
+        (pack "r:{") ++ fromMaybe (pack "emptyFile") mr ++ (pack "r:}")
+   |
+36 |              (Rfile mr) -> (pack "r:{")++fromMaybe (pack "emptyFile") mr++(pack "r:}")
+   |                                                                            ^^^^^^^^^^
+
+File.hs:38:23: error:
+    * Couldn't match expected type `Text' with actual type `[Text]'
+    * In the pattern: x : xs
+      In an equation for `fromText':
+          fromText (x : xs)
+            = case Data.Text.head x of
+                'r' -> readContent xs
+                'd' -> undefined
       In the instance declaration for `TextEncode File'
    |
-33 |         toText(Dfile s)= (pack "d:{")++(toText s) ++  (pack "}")
-   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+38 |             fromText (x:xs)= case Data.Text.head  x of
+   |                       ^^^^
 
-File.hs:33:27: error:
-    * Couldn't match expected type `[a2]' with actual type `Text'
-    * In the first argument of `(++)', namely `(pack "d:{")'
-      In the expression: (pack "d:{") ++ (toText s) ++ (pack "}")
-      In an equation for `toText':
-          toText (Dfile s) = (pack "d:{") ++ (toText s) ++ (pack "}")
-   |
-33 |         toText(Dfile s)= (pack "d:{")++(toText s) ++  (pack "}")
-   |                           ^^^^^^^^^^
-
-File.hs:33:41: error:
-    * Couldn't match expected type `[a2]' with actual type `Text'
-    * In the first argument of `(++)', namely `(toText s)'
-      In the second argument of `(++)', namely `(toText s) ++ (pack "}")'
-      In the expression: (pack "d:{") ++ (toText s) ++ (pack "}")
-   |
-33 |         toText(Dfile s)= (pack "d:{")++(toText s) ++  (pack "}")
-   |                                         ^^^^^^^^
-
-File.hs:33:56: error:
-    * Couldn't match expected type `[a2]' with actual type `Text'
-    * In the second argument of `(++)', namely `(pack "}")'
-      In the second argument of `(++)', namely `(toText s) ++ (pack "}")'
-      In the expression: (pack "d:{") ++ (toText s) ++ (pack "}")
-   |
-33 |         toText(Dfile s)= (pack "d:{")++(toText s) ++  (pack "}")
-   |                                                        ^^^^^^^^
-
-File.hs:34:36: error:
-    * Couldn't match expected type `[a3]' with actual type `Text'
-    * In the second argument of `take', namely `text'
-      In the expression: take 1 text
+File.hs:39:20: error:
+    * Couldn't match expected type `File'
+                  with actual type `Maybe [Double]'
+    * In the expression: readContent xs
+      In a case alternative: 'r' -> readContent xs
       In the expression:
-        case take 1 text of
-          'r' -> Rfile (parseText text)
-          'd' -> _
+        case Data.Text.head x of
+          'r' -> readContent xs
+          'd' -> undefined
    |
-34 |         fromText text =case take 1 text of
-   |                                    ^^^^
+39 |              'r' ->readContent xs
+   |                    ^^^^^^^^^^^^^^
 
-File.hs:35:13: error:
-    * Couldn't match expected type `[a3]' with actual type `Char'
-    * In the pattern: 'r'
-      In a case alternative: 'r' -> Rfile (parseText text)
-      In the expression:
-        case take 1 text of
-          'r' -> Rfile (parseText text)
-          'd' -> _
+File.hs:39:32: error:
+    * Couldn't match type `Text' with `Char'
+      Expected type: String
+        Actual type: [Text]
+    * In the first argument of `readContent', namely `xs'
+      In the expression: readContent xs
+      In a case alternative: 'r' -> readContent xs
    |
-35 |             'r' ->Rfile (parseText text) 
-   |             ^^^
+39 |              'r' ->readContent xs
+   |                                ^^
 
-File.hs:35:26: error:
-    * Couldn't match type `[Double]' with `Readme'
-      Expected type: Maybe Readme
-        Actual type: Maybe [Double]
-    * In the first argument of `Rfile', namely `(parseText text)'
-      In the expression: Rfile (parseText text)
-      In a case alternative: 'r' -> Rfile (parseText text)
-   |
-35 |             'r' ->Rfile (parseText text) 
-   |                          ^^^^^^^^^^^^^^
-
-File.hs:37:13: error:
-    * Couldn't match expected type `[a3]' with actual type `Char'
-    * In the pattern: 'd'
-      In a case alternative: 'd' -> _
-      In the expression:
-        case take 1 text of
-          'r' -> Rfile (parseText text)
-          'd' -> _
-   |
-37 |             'd' ->
-   |             ^^^
-
-File.hs:38:14: error:
-    * Found hole: _ :: File
-    * In the expression: _
-      In a case alternative: 'd' -> _
-      In the expression:
-        case take 1 text of
-          'r' -> Rfile (parseText text)
-          'd' -> _
-    * Relevant bindings include
-        text :: Text (bound at File.hs:34:18)
-        fromText :: Text -> File (bound at File.hs:34:9)
-      Valid substitutions include
-        undefined :: forall (a :: TYPE r).
-                     GHC.Stack.Types.HasCallStack =>
-                     a
-          (imported from `Prelude' at File.hs:1:8-11
-           (and originally defined in `GHC.Err'))
-   |
-38 |              _
-   |              ^
-
-File.hs:41:16: error:
-    * Couldn't match expected type `Text' with actual type `[Char]'
-    * In the pattern: x : xs
-      In an equation for `parseText':
-          parseText (x : xs)
-            = go [] [] (x : xs)
-            where
-                go _ ls [] = if length ls == 6 then Just ls else Nothing
-                go small big (x : xs)
-                  = case x of {
-                      ',' -> go ... ((read :: Text -> Double) . unpack small) : big xs }
-   |
-41 |     parseText (x:xs)=go [] [](x:xs) where
-   |                ^^^^
-
-File.hs:41:22: error:
-    * Couldn't match type `[Char] -> Double' with `[Double]'
+File.hs:43:24: error:
+    * Couldn't match type `[a0]' with `Double'
       Expected type: Maybe [Double]
-        Actual type: Maybe ([Char] -> Double)
+        Actual type: Maybe [[a0]]
     * In the expression: go [] [] (x : xs)
-      In an equation for `parseText':
-          parseText (x : xs)
+      In an equation for `readContent':
+          readContent (x : xs)
             = go [] [] (x : xs)
             where
-                go _ ls [] = if length ls == 6 then Just ls else Nothing
+                go _ ls [] = if length length ls > 0 then Just ls else Nothing
                 go small big (x : xs)
-                  = case x of {
-                      ',' -> go ... ((read :: Text -> Double) . unpack small) : big xs }
+                  = case x of
+                      '}' -> Just (small : big)
+                      ',' -> go ... small : big xs
    |
-41 |     parseText (x:xs)=go [] [](x:xs) where
-   |                      ^^^^^^^^^^^^^^
+43 |     readContent (x:xs)=go [] [](x:xs) where
+   |                        ^^^^^^^^^^^^^^
 
-File.hs:41:28: error:
-    * Couldn't match expected type `[Char] -> Double'
-                  with actual type `[a0]'
-    * In the second argument of `go', namely `[]'
-      In the expression: go [] [] (x : xs)
-      In an equation for `parseText':
-          parseText (x : xs)
-            = go [] [] (x : xs)
-            where
-                go _ ls [] = if length ls == 6 then Just ls else Nothing
-                go small big (x : xs)
-                  = case x of {
-                      ',' -> go ... ((read :: Text -> Double) . unpack small) : big xs }
-   |
-41 |     parseText (x:xs)=go [] [](x:xs) where
-   |                            ^^
-
-File.hs:42:9: error:
-    * Couldn't match type `Text' with `[a]'
-      Expected type: [a]
-                     -> ([Char] -> Double) -> [Char] -> Maybe ([Char] -> Double)
-        Actual type: Text
-                     -> ([Char] -> Double) -> [Char] -> Maybe ([Char] -> Double)
-    * In an equation for `parseText':
-          parseText (x : xs)
-            = go [] [] (x : xs)
-            where
-                go _ ls [] = if length ls == 6 then Just ls else Nothing
-                go small big (x : xs)
-                  = case x of {
-                      ',' -> go ... ((read :: Text -> Double) . unpack small) : big xs }
+File.hs:44:32: error:
+    * Couldn't match expected type `[[a]] -> Integer'
+                  with actual type `Int'
+    * The function `length' is applied to two arguments,
+      but its type `(t0 a1 -> Int) -> Int' has only one
+      In the first argument of `(>)', namely `length length ls'
+      In the expression: length length ls > 0
     * Relevant bindings include
-        go :: [a]
-              -> ([Char] -> Double) -> [Char] -> Maybe ([Char] -> Double)
-          (bound at File.hs:42:9)
+        ls :: [[a]] (bound at File.hs:44:14)
+        go :: [a] -> [a] -> [Char] -> Maybe [[a]] (bound at File.hs:44:9)
    |
-42 |         go _ ls []=if length ls == 6 then Just ls else Nothing
-   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+44 |         go _ ls []         =if length length ls > 0  then Just ls else Nothing
+   |                                ^^^^^^^^^^^^^^^^
 
-File.hs:44:37: error:
-    * Couldn't match expected type `Maybe ([Char] -> Double)'
-                  with actual type `[[Char] -> Maybe ([Char] -> Double)]'
-    * In the expression:
-        go [] ((read :: Text -> Double) . unpack small) : big xs
-      In a case alternative:
-          ',' -> go [] ((read :: Text -> Double) . unpack small) : big xs
+File.hs:47:38: error:
+    * Couldn't match expected type `Maybe [[a]]'
+                  with actual type `[[Char] -> Maybe [[a]]]'
+    * In the expression: go [] small : big xs
+      In a case alternative: ',' -> go [] small : big xs
       In the expression:
-        case x of {
-          ',' -> go [] ((read :: Text -> Double) . unpack small) : big xs }
+        case x of
+          '}' -> Just (small : big)
+          ',' -> go [] small : big xs
+    * Relevant bindings include
+        big :: [[a]] (bound at File.hs:45:18)
+        small :: [a] (bound at File.hs:45:12)
+        go :: [a] -> [a] -> [Char] -> Maybe [[a]] (bound at File.hs:44:9)
    |
-44 |                               ',' ->go []  ((read::Text->Double). unpack small):big xs
-   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+47 |                               ',' -> go [] small:big  xs 
+   |                                      ^^^^^^^^^^^^^^^^^^^
 
-File.hs:44:46: error:
-    * Couldn't match type `Text' with `[Char]'
-      Expected type: Text -> Double
-        Actual type: String -> Double
-    * In the first argument of `(.)', namely `(read :: Text -> Double)'
-      In the second argument of `go', namely
-        `((read :: Text -> Double) . unpack small)'
-      In the first argument of `(:)', namely
-        `go [] ((read :: Text -> Double) . unpack small)'
-   |
-44 |                               ',' ->go []  ((read::Text->Double). unpack small):big xs
-   |                                              ^^^^
-
-File.hs:44:67: error:
-    * Couldn't match type `[Char]' with `[Char] -> Text'
-      Expected type: [Char] -> Text
-        Actual type: String
-    * Possible cause: `unpack' is applied to too many arguments
-      In the second argument of `(.)', namely `unpack small'
-      In the second argument of `go', namely
-        `((read :: Text -> Double) . unpack small)'
-      In the first argument of `(:)', namely
-        `go [] ((read :: Text -> Double) . unpack small)'
-   |
-44 |                               ',' ->go []  ((read::Text->Double). unpack small):big xs
-   |                                                                   ^^^^^^^^^^^^
-
-File.hs:44:81: error:
-    * Couldn't match type `Double'
-                     with `[[Char] -> Maybe ([Char] -> Double)]'
-      Expected type: [Char] -> [[Char] -> Maybe ([Char] -> Double)]
-        Actual type: [Char] -> Double
+File.hs:47:50: error:
+    * Couldn't match expected type `[Char] -> [[Char] -> Maybe [[a]]]'
+                  with actual type `[[a]]'
     * The function `big' is applied to one argument,
-      its type is `t0 a4',
-      it is specialized to `[Char] -> Double'
+      but its type `[[a]]' has none
       In the second argument of `(:)', namely `big xs'
-      In the expression:
-        go [] ((read :: Text -> Double) . unpack small) : big xs
+      In the expression: go [] small : big xs
+    * Relevant bindings include
+        big :: [[a]] (bound at File.hs:45:18)
+        small :: [a] (bound at File.hs:45:12)
+        go :: [a] -> [a] -> [Char] -> Maybe [[a]] (bound at File.hs:44:9)
    |
-44 |                               ',' ->go []  ((read::Text->Double). unpack small):big xs
-   |                                                                                 ^^^^^^
+47 |                               ',' -> go [] small:big  xs 
+   |                                                  ^^^^^^^
 
-File.hs:48:15: error:
+File.hs:56:15: error:
     * Couldn't match type `File' with `Text'
       Expected type: File -> String
         Actual type: Text -> String
@@ -293,5 +172,5 @@ File.hs:48:15: error:
       In an equation for `show': show = unpack . fromText
       In the instance declaration for `Show File'
    |
-48 |         show =unpack.fromText 
+56 |         show =unpack.fromText 
    |               ^^^^^^^^^^^^^^^
