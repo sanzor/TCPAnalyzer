@@ -23,17 +23,12 @@ module TCPFile(toText,fromText,TCPFile) where
 
     instance TextEncode Readme where
         toText r=pack $ intercalate ","  (map  show [maxClients r,minClients r,stepClients r,maxDelay  r,minDelay r,stepDelay r])
-        fromText txt = Readme{
-                        maxClients=Prelude.head dat,
-                        minClients=dat!!1,
-                        stepClients=dat!!2,
-                        maxDelay=dat!!3,
-                        minDelay=dat!!4,
-                        stepDelay=dat!!5} where
-                            dat= case len of 
-                                6 ->Prelude.take 6 . readData $ txt
-                                _ ->[0,0,0,0,0,0]
-                            len=length dat
+        fromText txt =let len= length dat
+                          dat= case len of 
+                                6 ->Prelude.take 6 .readData $ txt
+                                _ ->[0,0,0,0,0,0] in 
+                Readme{maxClients=Prelude.head dat,minClients=dat!!1,stepClients=dat!!2,maxDelay=dat!!3,minDelay=dat!!4,stepDelay=dat!!5} where
+                            
 
 
 
@@ -55,16 +50,19 @@ module TCPFile(toText,fromText,TCPFile) where
             
                 
     readData::Text->[Int]
-    readData =catMaybes .mvalues.split
-    
-    filterText::Text->[Char]->Text
-    filterText tx chars=pack (Prelude.filter (\x->(unpack x) `elem`chars) tx)
-
-    split::Text->[Text]
-    split =splitOn (pack ",")
+    readData =catMaybes . maybeValues where
+        maybeValues=mvalues.split.filterText
 
     mvalues::[Text]->[Maybe Int]
     mvalues arr=map (\x->(readMaybe::String->Maybe Int).unpack $ x) arr
+
+    split::Text->[Text]
+    split =splitOn (pack ",")
+    
+    filterText::Text->[Char]->Text
+    filterText tx chars=Data.Text.filter (\x -> not (x `elem` chars)) tx
+
+   
     
      
 
