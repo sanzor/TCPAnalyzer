@@ -6,12 +6,25 @@ module TCPFile(toText,fromText,TCPFile) where
     import Data.List(intercalate) 
    
     data TCPFile=Rfile (Maybe Readme) | Dfile  Samples | Empty
+    data Header=Header { ftype::Char}
+
+    instance Show TCPFile where
+        show (Rfile t)="Rfile " ++"{"++content++"}" where
+            content=case t of
+                Nothing->""
+                Just c -> show c
+        show (Dfile c)="Dfile " ++"{"++show c ++ "}"
 
     newtype Samples=Samples{values::[Maybe Double]}deriving(Show)
 
     data Readme=Readme{ maxClients::Int, minClients::Int,stepClients::Int,maxDelay::Int,minDelay::Int,stepDelay::Int}deriving(Show)
 
-    data FileData=FileData{ header::Char,rawContent::Text}
+    data FileData=FileData{ header::Header,rawContent::Text}
+    
+    getHeader::TCPFile->Header
+    getHeader (Rfile _ ) = Header { ftype='r'}
+    getHeader (Dfile _ )= Header{ftype='d'}
+    getHeader _ = Header {ftype='e'}
 
     instance TextEncode Samples where
         toText s=Data.Text.concat ( mapMaybe select (values s)) where
@@ -51,16 +64,16 @@ module TCPFile(toText,fromText,TCPFile) where
                 
     readData::Text->[Int]
     readData =catMaybes . maybeValues where
-        maybeValues=mvalues.split.filterText
-
+        maybeValues=mvalues.split.filterText "{}"
+    
     mvalues::[Text]->[Maybe Int]
     mvalues arr=map (\x->(readMaybe::String->Maybe Int).unpack $ x) arr
 
     split::Text->[Text]
     split =splitOn (pack ",")
     
-    filterText::Text->[Char]->Text
-    filterText tx chars=Data.Text.filter (\x -> not (x `elem` chars)) tx
+    filterText::[Char]->Text->Text
+    filterText chars tx=Data.Text.filter (\x -> not (x `elem` chars)) tx
 
    
     

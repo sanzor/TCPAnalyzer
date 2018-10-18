@@ -12,4 +12,4 @@ module Main where
     writeTcpFile path file=Data.Text.IO.writeFile path (toText file)
 
     readTcpFile::FilePath->IO TCPFile
-    readTcpFile path =Data.Text.IO.readFile path >>=return . fromText
+    readTcpFile path =fromText <$> Data.Text.IO.readFile path  
