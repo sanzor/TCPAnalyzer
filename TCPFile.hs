@@ -21,6 +21,12 @@ module TCPFile(toText,fromText,TCPFile) where
 
     data FileData=FileData{ header::Header,rawContent::Text}
     
+    (>>?)::Maybe a->(a->Maybe b)->Maybe b
+    (Just t) >>? f=f t
+    Nothing >>? _=Nothing
+
+
+    
     getHeader::TCPFile->Header
     getHeader (Rfile _ ) = Header { ftype='r'}
     getHeader (Dfile _ )= Header{ftype='d'}
@@ -43,23 +49,31 @@ module TCPFile(toText,fromText,TCPFile) where
                 Readme{maxClients=Prelude.head dat,minClients=dat!!1,stepClients=dat!!2,maxDelay=dat!!3,minDelay=dat!!4,stepDelay=dat!!5} where
                             
 
-
-
+    
+    
     instance TextEncode TCPFile where
         toText f=case f of 
                Rfile mr -> pack ("{"++ unpack (toText $ fromMaybe (Readme 0 0 1 2 3 2)  mr)++"}")
                Dfile s  -> toText  s
                Empty ->pack "Empty File"
-        fromText t =makeFile (FileData header content) where
-            header=Data.Text.head t
-            content=Data.Text.tail t
-             
+        fromText txt = readHeader txt >>? \h->readFileData h txt >>? \fd ->makeFile fd
+
+    
+    readHeader::Text->Maybe Header
+    readHeader txt=case Data.Text.head txt of 
+        'r' ->Just (Header{ ftype='r'})
+        'd' ->Just (Header {ftype ='d'})
+        _  ->Nothing
+    
+            
+    readFileData::Header->Text->Maybe FileData
+    readFileData h t=Just (FileData h t)
 
     makeFile::FileData->TCPFile
-    makeFile fd= case header fd of
+    makeFile fd= case ftype.header $ fd of
             'r'->Rfile (Just (fromText . rawContent $ fd))
             'd'->Dfile (fromText . rawContent $ fd)
-            _  ->Empty where 
+            _  ->Empty 
             
                 
     readData::Text->[Int]
