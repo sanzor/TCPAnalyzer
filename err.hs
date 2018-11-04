@@ -1,25 +1,43 @@
 
-TCPFile.hs:59:24: error:
-    * Couldn't match expected type `TCPFile'
-                  with actual type `Maybe b0'
-    * In the expression:
-        readHeader txt >>? \ h -> Just (FileData h txt) >>? makeFile
-      In an equation for `fromText':
-          fromText txt
-            = readHeader txt >>? \ h -> Just (FileData h txt) >>? makeFile
-      In the instance declaration for `TextEncode TCPFile'
+TCPFile.hs:75:18: error:
+    * Couldn't match expected type `Maybe TCPFile'
+                  with actual type `TCPFile'
+    * In the expression: Rfile (Just (fromText . rawContent $ fd))
+      In a case alternative:
+          'r' -> Rfile (Just (fromText . rawContent $ fd))
+      In the expression:
+        case ftype . header $ fd of
+          'r' -> Rfile (Just (fromText . rawContent $ fd))
+          'd' -> Dfile (fromText . rawContent $ fd)
+          _ -> Empty
    |
-59 |         fromText txt = readHeader txt >>? \h-> Just ( FileData h txt )>>? makeFile
-   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+75 |             'r'->Rfile (Just (fromText . rawContent $ fd))
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TCPFile.hs:59:75: error:
-    * Couldn't match type `TCPFile' with `Maybe b0'
-      Expected type: FileData -> Maybe b0
-        Actual type: FileData -> TCPFile
-    * In the second argument of `(>>?)', namely `makeFile'
-      In the expression: Just (FileData h txt) >>? makeFile
-      In the second argument of `(>>?)', namely
-        `\ h -> Just (FileData h txt) >>? makeFile'
+TCPFile.hs:76:18: error:
+    * Couldn't match expected type `Maybe TCPFile'
+                  with actual type `TCPFile'
+    * In the expression: Dfile (fromText . rawContent $ fd)
+      In a case alternative: 'd' -> Dfile (fromText . rawContent $ fd)
+      In the expression:
+        case ftype . header $ fd of
+          'r' -> Rfile (Just (fromText . rawContent $ fd))
+          'd' -> Dfile (fromText . rawContent $ fd)
+          _ -> Empty
    |
-59 |         fromText txt = readHeader txt >>? \h-> Just ( FileData h txt )>>? makeFile
-   |                                                                           ^^^^^^^^
+76 |             'd'->Dfile (fromText . rawContent $ fd)
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TCPFile.hs:77:18: error:
+    * Couldn't match expected type `Maybe TCPFile'
+                  with actual type `TCPFile'
+    * In the expression: Empty
+      In a case alternative: _ -> Empty
+      In the expression:
+        case ftype . header $ fd of
+          'r' -> Rfile (Just (fromText . rawContent $ fd))
+          'd' -> Dfile (fromText . rawContent $ fd)
+          _ -> Empty
+   |
+77 |             _  ->Empty 
+   |                  ^^^^^

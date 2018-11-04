@@ -56,7 +56,10 @@ module TCPFile(toText,fromText,TCPFile) where
                Rfile mr -> pack ("{"++ unpack (toText $ fromMaybe (Readme 0 0 1 2 3 2)  mr)++"}")
                Dfile s  -> toText  s
                Empty ->pack "Empty File"
-        fromText txt = readHeader txt >>? (\h -> Just (FileData h txt)) >>? makeFile
+        fromText txt = case readHeader txt >>? \h -> Just (FileData h txt) of
+            Nothing -> makeFile
+           
+            
 
     
     readHeader::Text->Maybe Header
@@ -69,9 +72,9 @@ module TCPFile(toText,fromText,TCPFile) where
 
     makeFile::FileData->TCPFile
     makeFile fd= case ftype.header $ fd of
-            'r'->Rfile (Just (fromText . rawContent $ fd))
+            'r'-> Rfile (Just (fromText . rawContent $ fd))
             'd'->Dfile (fromText . rawContent $ fd)
-            _  ->Empty 
+            _  -> Empty 
             
                 
     readData::Text->[Int]
