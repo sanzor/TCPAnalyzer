@@ -48,7 +48,7 @@ module TCPFile(toText,fromText,TCPFile) where
                                 _ ->[0,0,0,0,0,0] in 
                 Readme{maxClients=Prelude.head dat,minClients=dat!!1,stepClients=dat!!2,maxDelay=dat!!3,minDelay=dat!!4,stepDelay=dat!!5} where
                             
-
+                     
     
     
     instance TextEncode TCPFile where
@@ -56,22 +56,30 @@ module TCPFile(toText,fromText,TCPFile) where
                Rfile mr -> pack ("{"++ unpack (toText $ fromMaybe (Readme 0 0 1 2 3 2)  mr)++"}")
                Dfile s  -> toText  s
                Empty ->pack "Empty File"
-        fromText txt = readHeader txt >>? (\h -> Just (FileData h txt)) >>? makeFile
+        fromText  = textToFile
+            
+            
+           
+    textToFile::Text->TCPFile
+    textToFile input=case readHeader input >>? (\h -> Just (FileData h input)) >>?  makeFile of
+        Just r -> r
+        Nothing ->Empty
 
+    
     
     readHeader::Text->Maybe Header
     readHeader txt=case Data.Text.head txt of 
         'r' ->Just (Header{ ftype='r'})
         'd' ->Just (Header {ftype ='d'})
-        _  ->Nothing
+        _  -> Nothing
     
     
 
-    makeFile::FileData->TCPFile
+    makeFile::FileData->Maybe TCPFile
     makeFile fd= case ftype.header $ fd of
-            'r'->Rfile (Just (fromText . rawContent $ fd))
-            'd'->Dfile (fromText . rawContent $ fd)
-            _  ->Empty 
+            'r'->Just (Rfile (Just (fromText . rawContent $ fd)))
+            'd'->Just (Dfile (fromText . rawContent $ fd))
+            _  ->Nothing 
             
                 
     readData::Text->[Int]
