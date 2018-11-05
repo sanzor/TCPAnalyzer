@@ -73,7 +73,8 @@ module TCPFile(toText,fromText,TCPFile) where
         'd' ->Just (Header {ftype ='d'})
         _  -> Nothing
     
-    
+    readFileData::Header->Maybe FileData
+    readFileData h=case 
 
     makeFile::FileData->Maybe TCPFile
     makeFile fd= case ftype.header $ fd of
