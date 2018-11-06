@@ -6,6 +6,7 @@ module Main where
     main::IO()
     main=do
         dat<-readTcpFile "test.txt"
+        print dat
         writeTcpFile "output.txt" dat
     
     writeTcpFile::FilePath->TCPFile->IO()

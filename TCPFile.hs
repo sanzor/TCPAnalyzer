@@ -25,8 +25,6 @@ module TCPFile(toText,fromText,TCPFile) where
     (Just t) >>? f=f t
     Nothing >>? _=Nothing
 
-
-    
     getHeader::TCPFile->Header
     getHeader (Rfile _ ) = Header { ftype='r'}
     getHeader (Dfile _ )= Header{ftype='d'}
@@ -73,9 +71,6 @@ module TCPFile(toText,fromText,TCPFile) where
         'd' ->Just (Header {ftype ='d'})
         _  -> Nothing
     
-    readFileData::Header->Maybe FileData
-    readFileData h=case 
-
     makeFile::FileData->Maybe TCPFile
     makeFile fd= case ftype.header $ fd of
             'r'->Just (Rfile (Just (fromText . rawContent $ fd)))
