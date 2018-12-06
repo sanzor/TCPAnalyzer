@@ -5,33 +5,27 @@ module DataParse where
     import Text.Read(readEither)
     import Data.List(intercalate)
 
-   
+    data Numeric=I Int | D Double deriving Show
 
-    data FileData=FileData{ header::Either String Char,content::[Int]}
+    data FileData=FileData{ header::Either String Char,content::[Numeric]}
 
     instance Show FileData where
-        show (FileData h c)="header:"++ (show (fromRight 'a' h))++", content:"++ intercalate "," (map show c) where
-           
-    
-    
+        show (FileData h c)="FileData:{ header: "++ he++", content:"++co where
+            he=either id (:[]) h
+            co=intercalate "," (fmap show c)
 
-
-    fileData::Text->Either String FileData
-    fileData tx=let h=readHead . head $ tx
-                    c=rights $ fmap readInt (toList . tail $ tx) 
-                in Right (FileData h c)
+    textToFileData::Text->FileData
+    textToFileData tx=let h=readHead . head $ tx
+                          c=rights $ fmap readNumeric (toList . tail $ tx) 
+                      in FileData h c
     
     u::Text->String
     u =Data.Text.unpack
 
     p::String->Text
     p=Data.Text.pack
-
-    up::Text->Char
-    up t=u t!!0
     
-    pu::Char->Text
-    pu c=p [c]
+   
     
     readHead::Char->Either String Char
     readHead ch=case ch of 
@@ -42,12 +36,16 @@ module DataParse where
     
     toList::Text->[Text]
     toList =splitOn (p ",") . Data.Text.tail . Data.Text.init 
+    
 
-    readInt::Text->Either String Int
-    readInt =(readEither::String->Either String Int).unpack 
+    
+
+    readNumeric::Text->Either String Numeric
+    readNumeric text=let str=u text in
+                      if '.' `elem` str then 
+                        fmap D (readEither str::Either String Double)
+                      else
+                        fmap I (readEither str::Either String Int)
    
 
                 
-   
-    
-    
