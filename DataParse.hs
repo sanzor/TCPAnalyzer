@@ -1,41 +1,53 @@
 module DataParse where 
-    import Prelude hiding(head,tail)
-    import Data.Text(head,tail,init,pack,unpack,Text,splitOn)
+    import Prelude hiding (span,tail,head,init)
+    import Data.Text(head,tail,init,pack,unpack,Text,splitOn,span,index)
     import Data.Either
     import Text.Read(readEither)
     import Data.List(intercalate)
+    import Utils(u,p)
 
-    data Numeric=I Int | D Double deriving Show
+    data Numeric=I Int | D Double 
+    instance Show Numeric where
+        show (I x)=show x
+        show (D y)=show y
+
+    instance Num Numeric where
+        (+) (I a) (I b) =I (a+b)
+        (+) (D a) (I b) =D (a+ fromIntegral b)
+        (+) (I a) (D b)=D (fromIntegral a+b)
+        (-) (D a) (I b)= D (a- fromIntegral b)
+        (-) (I a) (D b)=D(fromIntegral a -b)
+    
+    toInt::Numeric->Int
+    toInt (I x)=x
+    toInt (D x)= round x
+    toDouble::Numeric->Double
+    toDouble (D x)=x
+    toDouble (I x)=fromIntegral x
+
 
     data FileData=FileData{ header::Either String Char,content::[Numeric]}
 
     instance Show FileData where
-        show (FileData h c)="FileData:{ header: "++ he++", content:"++co where
+        show (FileData h c)="FileData:{ header: "++ he++", content:"++co++"}" where
             he=either id (:[]) h
             co=intercalate "," (fmap show c)
 
     textToFileData::Text->FileData
-    textToFileData tx=let h=readHead . head $ tx
-                          c=rights $ fmap readNumeric (toList . tail $ tx) 
-                      in FileData h c
-    
-    u::Text->String
-    u =Data.Text.unpack
-
-    p::String->Text
-    p=Data.Text.pack
-    
-   
-    
-    readHead::Char->Either String Char
-    readHead ch=case ch of 
+    textToFileData tx=let   (g,payload)=span (/='{') tx
+                            vals=rights $ fmap  readNumeric  (toList payload) in
+                            FileData (readHead payload) vals 
+                  
+                 
+    readHead::Text->Either String Char
+    readHead tx=case index tx 1 of 
         'r' ->Right 'r'
         'd' ->Right 'd'
         _  -> Left "Invalid character"
     
     
     toList::Text->[Text]
-    toList =splitOn (p ",") . Data.Text.tail . Data.Text.init 
+    toList =splitOn (p ",") . tail . init 
     
 
     

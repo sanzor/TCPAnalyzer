@@ -10,5 +10,4 @@ module MISC where
     wrap::a->IO a
     check::(a->b)->(a->b->IO b)
 
-    instance Printer Text where
-    check =
+   
