@@ -23,25 +23,25 @@ module Types(toText,fromText,TCPFile) where
         fromText  = parse
         toText f  = undefined
     
-
+    
     instance Show TCPFile where
-        show (Config settings)="{type:Config , Settings:"++(show settings)++" }"
+        show (Config settings)="{type:Config , Settings:"++show settings++" }"
         show (Payload arr)="{type:Payload, data:"++foldl (\x y->x++","++y) "" (fmap show arr)++"}"
         show  (Invalid str)=str
 
     
 
     serialize::TCPFile->Text
-    serialize (Config s)=let content= arrayToString  [maxC s,minC,cStep s,maxD s,minD s,dStep s] in 
-                             p . enclose $ addHeader 'r' content
-    serialize (Payload arr)= p.enclose $ addHeader 'd' (arrayToString arr)
+    serialize (Config s)=let content= intercalate "," (map show  [maxC s,minC s,cStep s,maxD s,minD s,dStep s]) in 
+                             enclose $ addHeader 'r' (p content)
+    serialize (Payload arr)= enclose $ addHeader 'd' ( p $ arrayToString arr)
     
     
-    arrayToString::Show a=>[a]->Text
-    arrayToText arr= p . intercalate "," $  fmap show arr
+    arrayToString::Show a=>[a]->String
+    arrayToString arr =intercalate "," $ map show arr
 
     addHeader::Char->Text->Text
-    addHeader c t=Data.Text.concat [p c,p ",",t]
+    addHeader c t=Data.Text.concat [p [c],p ",",t]
 
     enclose::Text->Text
     enclose t= Data.Text.concat [p "{",t, p "}"]

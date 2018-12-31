@@ -21,11 +21,12 @@ module DataParse where
     toInt::Numeric->Int
     toInt (I x)=x
     toInt (D x)= round x
+
     toDouble::Numeric->Double
     toDouble (D x)=x
     toDouble (I x)=fromIntegral x
 
-
+    sample=p "this is me"  
     data FileData=FileData{ header::Either String Char,content::[Numeric]}
 
     instance Show FileData where
