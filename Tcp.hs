@@ -1,19 +1,20 @@
-module Types(toText,fromText,TCPFile) where 
-    import DataParse
+module Tcp(toText,fromText,TCPFile) where 
+    
     import Text.Read(readMaybe)
     import Data.Text(splitOn,Text,concat,pack,unpack,tail,head,filter) 
     import Data.Maybe(Maybe,mapMaybe,fromMaybe,catMaybes)
     import Data.List(intercalate) 
     import Data.Either(isRight,fromRight)
-    import Utils
+    import Utils(u,p)
+    import Parse
+    import Classes(TextEncode,fromText,toText)
 
 
     sp=(p "{r,1.22,3.44,6.71,3.33,4.44,5}")
+    sp1=(p "{d,1.22,5.5,6.66,7.33,9,10")
 
 
-    class TextEncode a where
-        toText::a-> Text
-        fromText::Text-> a
+   
    
     data TCPFile=Config Settings | Payload [Numeric] | Invalid String
    
@@ -21,7 +22,7 @@ module Types(toText,fromText,TCPFile) where
     
     instance TextEncode TCPFile where
         fromText  = parse
-        toText f  = undefined
+        toText   = serialize
     
     
     instance Show TCPFile where
@@ -49,13 +50,13 @@ module Types(toText,fromText,TCPFile) where
 
 
     parse::Text->TCPFile
-    parse text=let (FileData h c) =textToFileData text  in
+    parse text=let (FileData h c) = fromText  text  in
                   if isRight h then
                      makeFile (fromRight 'r' h) c
                   else Invalid "Could not process header"
 
     makeFile::Char->[Numeric]->TCPFile
-    makeFile  'r' ls | length ls /=6 =  Invalid "Invalid number or type of parameters" 
+    makeFile  'r' ls | length ls < 6 =  Invalid "Invalid number or type of parameters" 
                      | otherwise = let vals=fmap toInt (take 6 ls) in 
                         Config Settings{maxC=Prelude.head vals,minC=vals!!1,cStep=vals!!2,maxD=vals!!3,minD=vals!!4,dStep=vals!!5 } 
     makeFile  'd' ls = Payload  ls

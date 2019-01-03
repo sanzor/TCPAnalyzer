@@ -1,16 +1,26 @@
 module Main where 
+    import Prelude hiding(readFile,writeFile)
     import Data.Text(Text,pack,unpack)
     import Data.Text.IO(readFile,writeFile)
-    import TCPFile(TCPFile)
-    import TCPEncoding(toText,fromText)
+    import System.Directory(getDirectoryContents)
+    import Classes(TextEncode,toText,fromText)
+    import Control.Monad(forM_,filterM)
+    import Text.Regex
+    import qualified Data.Map as Map
+    import Tcp(TCPFile)
     main::IO()
     main=do
-        dat<-readTcpFile "test.txt"
-        print dat
-        writeTcpFile "output.txt" dat
-    
-    writeTcpFile::FilePath->TCPFile->IO()
-    writeTcpFile path file=Data.Text.IO.writeFile path (toText file)
+        putStrLn "aa"
 
-    readTcpFile::FilePath->IO TCPFile
-    readTcpFile path =fromText <$> Data.Text.IO.readFile path  
+        
+    getFiles::FilePath->IO [String]
+    getFiles  = getDirectoryContents
+
+   
+
+
+   
+
+   
+
+    

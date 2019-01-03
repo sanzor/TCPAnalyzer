@@ -1,4 +1,4 @@
-module Utils where
+module Utils(u,p) where
     import System.IO(FilePath)
     import Data.Text
     import  qualified Data.Text.IO(readFile,writeFile) 

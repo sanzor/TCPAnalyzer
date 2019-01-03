@@ -1,12 +1,15 @@
-module DataParse where 
+module Parse where 
     import Prelude hiding (span,tail,head,init)
     import Data.Text(head,tail,init,pack,unpack,Text,splitOn,span,index)
     import Data.Either
     import Text.Read(readEither)
     import Data.List(intercalate)
     import Utils(u,p)
+    import Classes(TextEncode,fromText,toText)
 
     data Numeric=I Int | D Double 
+
+
     instance Show Numeric where
         show (I x)=show x
         show (D y)=show y
@@ -29,16 +32,28 @@ module DataParse where
     sample=p "this is me"  
     data FileData=FileData{ header::Either String Char,content::[Numeric]}
 
+    makeData::Either String Char ->[Numeric] ->FileData
+    makeData e l=FileData e l
+    
     instance Show FileData where
         show (FileData h c)="FileData:{ header: "++ he++", content:"++co++"}" where
             he=either id (:[]) h
             co=intercalate "," (fmap show c)
 
+
+
+
+    instance  TextEncode FileData where 
+        fromText = textToFileData
+        
+
     textToFileData::Text->FileData
     textToFileData tx=let   (g,payload)=span (/='{') tx
                             vals=rights $ fmap  readNumeric  (toList payload) in
                             FileData (readHead payload) vals 
-                  
+   
+       
+
                  
     readHead::Text->Either String Char
     readHead tx=case index tx 1 of 
