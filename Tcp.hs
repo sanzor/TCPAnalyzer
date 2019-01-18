@@ -3,6 +3,7 @@ module Tcp(toText,fromText,TCPFile) where
     import Text.Read(readMaybe)
     import Data.Text(splitOn,Text,concat,pack,unpack,tail,head,filter) 
     import Data.Maybe(Maybe,mapMaybe,fromMaybe,catMaybes)
+    import Data.Text.IO(readFile)
     import Data.List(intercalate) 
     import Data.Either(isRight,fromRight)
     import Utils(u,p)
@@ -50,7 +51,7 @@ module Tcp(toText,fromText,TCPFile) where
 
 
     parse::Text->TCPFile
-    parse text=let (FileData h c) = fromText  text  in
+    parse text=let (FileData h c) = fromText  text::FileData  in
                   if isRight h then
                      makeFile (fromRight 'r' h) c
                   else Invalid "Could not process header"
@@ -63,7 +64,11 @@ module Tcp(toText,fromText,TCPFile) where
     makeFIle   _  _  = Invalid "Invalid header"
                                      
     
-
+    test::IO Text
+    test = do
+        val<-Data.Text.IO.readFile "1.txt"
+        print . textToFileData $ val
+        return val
     
                   
     

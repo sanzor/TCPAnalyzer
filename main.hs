@@ -7,7 +7,7 @@ module Main where
     import qualified Data.Map as Map
     import Control.Monad(forM_,forM)
     import System.Environment(getArgs)
-
+    import Data.Map(Map,fromList,insert)
 
     import Tcp(TCPFile)
     import Classes(TextEncode,
@@ -15,22 +15,30 @@ module Main where
                    fromText)
     import Utils(u,p)
     
+    
 
     main::IO()
     main=do
-        let fpath="files"
-        fileNames<- fmap filterFiles $  getFiles fpath
-        fn<-mapM (\x ->
-            do 
-               let p= pathCombine [fpath,x]
-               fmap (writeFile ("./out/"++x)) (readFile p)
-               
-               
-            ) fileNames
-        putStrLn "done"
+        let folderPath="files"
+        fileNames<- fmap filterFiles $  getFiles folderPath
+        let dic=[]
+        let method fname= 
+                    do 
+                        let pwd= pathCombine [folderPath,fname]
+                        txt<-readFile pwd
+                        let content=fromText txt :: TCPFile
+                        Data.Map.insert (fname,content) dic
+                     in mapM_ method fileNames
+        mapM_ (\(k,v)->print ("k:"++show k++" v:"++show v) dic
+        putStrLn "Done"
+        
+        
 
+         
     parse::Text->TCPFile
-    parse =fromText       
+    parse =fromText  
+    
+
     pathCombine::[String]->String
     pathCombine ls="." ++ foldl (\x y-> x++"/"++y) "" ls
         
